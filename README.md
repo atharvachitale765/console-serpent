@@ -11,23 +11,24 @@ Welcome to console-serpent, a simple Snake game you can play in your terminal!
    ```
    
 2. **Compile:**
-   For Linux/MacOS:
+   -For Linux/MacOS:
    ```bash
    make
    ````
-   For Windows:
+   -For Windows:
    ```bash
    g++ main.cpp -o consolol
+   ```
 
 3. **Run!**
-   For Linux/MacOS:
+   -For Linux/MacOS:
    ```bash
    xterm -e ./consolol-serpent
    ```
-   For Windows:
+   -For Windows:
    ```bash
    .\consolol-serpent.exe
-   ```bash
+   ```
 
 ## Features
 

@@ -6,7 +6,7 @@ Welcome to console-serpent, a simple Snake game you can play in your terminal!
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/console-serpent.git
+   git clone https://github.com/atharvachitale765/console-serpent.git
    cd console-serpent
    ```
    

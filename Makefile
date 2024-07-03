@@ -1,10 +1,18 @@
 CC = g++
 CFLAGS = -Wall -Wextra -std=c++11
 
-all: consolol-serpent
+ifeq ($(OS),Windows_NT)
+    TARGET = consolol-serpent.exe
+    RM = del /Q
+else
+    TARGET = consolol-serpent
+    RM = rm -f
+endif
 
-consolol-serpent: main.cpp
-	$(CC) $(CFLAGS) $^ -o $@ -lncurses
+all: $(TARGET)
+
+$(TARGET): main.cpp
+	$(CC) $(CFLAGS) main.cpp -o $(TARGET)
 
 clean:
-	rm -f consolol-serpent
+	$(RM) $(TARGET)

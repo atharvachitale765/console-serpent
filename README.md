@@ -29,7 +29,7 @@ Welcome to console-serpent, a simple Snake game you can play in your terminal!
    ```
    For Windows:
    ```bash
-   ./consolol-serpent.exe
+   consolol-serpent.exe
    ```
 
 

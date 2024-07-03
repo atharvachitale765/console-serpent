@@ -1,16 +1,26 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
-#include <unistd.h>
-#include <termios.h>
 #include <ctime>
-#include <thread>
-#include <chrono>
+
+#if defined(_WIN32) || defined(_WIN64)
+    #include <conio.h>
+    #include <windows.h>
+#else
+    #include <unistd.h>
+    #include <termios.h>
+#endif
 
 using namespace std;
 
 const int width = 30;
 const int height = 20;
+
+// ANSI escape codes for colors
+#define RESET   "\033[0m"
+#define GREEN   "\033[1;32m"
+#define YELLOW  "\033[1;33m"
+#define RED     "\033[1;31m"
 
 class SnakeGame
 {
@@ -27,11 +37,9 @@ public:
 
     void Draw()
     {
-        system("clear"); // For Unix-like systems
+        system("clear"); // For Unix-like systems, use "cls" for Windows
 
-        cout << "\033[1;32m"; // Set text color to green
-
-        cout << "==========================\n";
+        cout << GREEN << "==========================\n";
         cout << "         Snake Game        \n";
         cout << "==========================\n\n";
 
@@ -43,9 +51,9 @@ public:
                     cout << "#";
 
                 if (i == headY && j == headX)
-                    cout << "\033[1;33mO"; // Set text color to yellow
+                    cout << YELLOW << "O"; // Head of the snake
                 else if (i == fruitY && j == fruitX)
-                    cout << "\033[1;31mF"; // Set text color to red
+                    cout << RED << "F"; // Fruit
                 else
                 {
                     bool isTail = false;
@@ -53,7 +61,7 @@ public:
                     {
                         if (tailPos.first == j && tailPos.second == i)
                         {
-                            cout << "o";
+                            cout << GREEN << "o"; // Tail of the snake
                             isTail = true;
                         }
                     }
@@ -67,14 +75,14 @@ public:
             cout << "\n";
         }
 
-        cout << "\033[1;32m"; // Set text color to green
-        cout << "==========================\n";
+        cout << GREEN << "==========================\n";
         cout << "Score: " << score << "\n\n";
+        cout << RESET; // Reset color to default
     }
 
     void Input()
     {
-        char ch = GetChar();
+        char ch = GetInput(); // Platform-independent input handling
 
         switch (ch)
         {
@@ -165,8 +173,11 @@ private:
     vector<pair<int, int>> tail;
     bool gameover;
 
-    char GetChar()
+    char GetInput()
     {
+#if defined(_WIN32) || defined(_WIN64)
+        return static_cast<char>(_getch());
+#else
         char buf = 0;
         struct termios old;
         fflush(stdout);
@@ -184,15 +195,13 @@ private:
         old.c_lflag |= ECHO;
         if (tcsetattr(0, TCSADRAIN, &old) < 0)
             perror("tcsetattr ~ICANON");
-        return (buf);
+        return buf;
+#endif
     }
 };
 
 int main()
 {
-    struct termios old;
-    tcgetattr(STDIN_FILENO, &old); // Get current terminal attributes
-
     srand(static_cast<unsigned>(time(nullptr))); // Seed for random number generation
 
     SnakeGame snakeGame;
@@ -202,8 +211,13 @@ int main()
         snakeGame.Draw();
         snakeGame.Input();
         snakeGame.Logic();
-        this_thread::sleep_for(chrono::milliseconds(100)); // Sleep for 0.1 seconds
+
+#if defined(_WIN32) || defined(_WIN64)
+        Sleep(100); // Sleep for 0.1 seconds (Windows)
+#else
+        usleep(100000); // Sleep for 0.1 seconds (Unix)
+#endif
     }
 
-    cout << "\033[0m";
+    return 0;
 }
